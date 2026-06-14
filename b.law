@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<meta name="theme-color" content="#1e3a5f"/>
+<meta name="apple-mobile-web-app-capable" content="yes"/>
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+<meta name="apple-mobile-web-app-title" content="CA Law Tracker"/>
+<meta name="description" content="CA Foundation Business Law Revision Tracker - All 7 Chapters"/>
+<title>CA Foundation – Business Law Tracker</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+:root{--bg:#0a0f1e;--bg2:#0f172a;--bg3:#060a14;--border:#1e293b;--text:#e2e8f0;--muted:#94a3b8;--dim:#475569;}
+html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Segoe UI',system-ui,sans-serif;overflow-x:hidden}
+#header{position:fixed;top:0;left:0;right:0;z-index:200;background:linear-gradient(135deg,#1e3a5f 0%,#1a1a2e 100%);border-bottom:1px solid #1e3a5f;box-shadow:0 4px 30px #00000088;padding:14px 16px 12px;}
+#header h1{font-size:clamp(14px,4vw,18px);font-weight:900;letter-spacing:-.5px;color:#fff;display:flex;align-items:center;gap:8px}
+#header p{font-size:10px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-top:2px}
+.progress-wrap{background:#0f172a;border-radius:12px;height:8px;overflow:hidden;margin:10px 0 6px}
+.progress-bar{height:100%;background:linear-gradient(90deg,#3b82f6,#8b5cf6,#10b981);border-radius:12px;transition:width .6s ease;box-shadow:0 0 8px #3b82f688}
+.progress-labels{display:flex;justify-content:space-between;font-size:10px;color:var(--dim)}
+.progress-pct{font-weight:700}
+#filters{position:fixed;top:0;left:0;right:0;z-index:199;background:var(--bg2);border-bottom:1px solid var(--border);padding:8px 12px;display:flex;gap:6px;flex-wrap:wrap;overflow-x:auto;scrollbar-width:none;}
+#filters::-webkit-scrollbar{display:none}
+.filter-btn{flex-shrink:0;padding:5px 11px;border-radius:20px;border:1px solid var(--border);background:transparent;color:var(--dim);font-size:10px;font-weight:700;cursor:pointer;letter-spacing:.5px;transition:all .2s;white-space:nowrap;}
+.filter-btn.active{border-color:var(--fc,#3b82f6);background:var(--fb,#1e3a5f33);color:var(--fc,#3b82f6)}
+#main{padding-top:0;padding-bottom:80px}
+#unit-nav{display:flex;gap:6px;overflow-x:auto;padding:10px 12px 6px;scrollbar-width:none;background:var(--bg);}
+#unit-nav::-webkit-scrollbar{display:none}
+.unit-pill{flex-shrink:0;padding:5px 12px;border-radius:20px;border:1px solid var(--border);background:var(--bg2);color:var(--dim);font-size:10px;font-weight:700;cursor:pointer;transition:all .2s;white-space:nowrap;}
+.unit-pill.active{border-color:var(--uc);background:var(--ub);color:var(--uc)}
+.unit-card{margin:0 10px 18px;border-radius:14px;overflow:hidden;border:1px solid;box-shadow:0 0 20px var(--us,#0000)}
+.unit-header{background:linear-gradient(135deg,var(--uh) 0%,#0f172a 100%);border-bottom:1px solid var(--ub2);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.unit-badge{font-size:10px;font-weight:800;letter-spacing:1px;background:var(--ub2);border:1px solid var(--ub3);color:var(--uc);border-radius:5px;padding:2px 7px;display:inline-block}
+.unit-title{font-size:clamp(13px,3vw,16px);font-weight:800;color:#f1f5f9;letter-spacing:-.3px;margin-top:4px}
+.unit-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.ring-wrap{position:relative;width:48px;height:48px;flex-shrink:0}
+.ring-wrap svg{transform:rotate(-90deg)}
+.ring-label{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800}
+.topics-wrap{background:var(--bg)}
+.topic-row{border-bottom:1px solid var(--border);background:transparent;transition:background .3s}
+.topic-row.done{background:#0d1f0d}
+.topic-header{display:flex;align-items:flex-start;gap:10px;padding:13px 14px;cursor:pointer}
+.cb{width:22px;height:22px;border-radius:6px;border:2px solid;flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:all .2s}
+.cb-check{font-size:13px;font-weight:900;display:none}
+.cb.checked .cb-check{display:block}
+.topic-content{flex:1;min-width:0}
+.topic-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.topic-num{font-size:10px;font-weight:800;letter-spacing:.5px;padding:1px 6px;border-radius:4px;flex-shrink:0}
+.topic-name{font-weight:700;font-size:clamp(12px,2.8vw,14px);color:var(--text)}
+.topic-row.done .topic-name{color:var(--dim);text-decoration:line-through}
+.topic-stats{display:flex;align-items:center;gap:8px;margin-top:5px;flex-wrap:wrap}
+.stars-row{display:flex;gap:2px;align-items:center}
+.star{font-size:12px}
+.imp-label{font-size:9px;font-weight:700;letter-spacing:.5px;margin-left:2px}
+.sub-count{font-size:10px;color:var(--dim)}
+.mini-bar-wrap{height:3px;background:var(--border);border-radius:3px;width:60px}
+.mini-bar{height:100%;border-radius:3px;transition:width .3s}
+.expand-icon{color:var(--dim);font-size:13px;flex-shrink:0;margin-top:3px;transition:transform .3s}
+.expand-icon.open{transform:rotate(180deg)}
+.subtopics-wrap{background:var(--bg3);border-top:1px solid;display:none;padding:8px 14px 12px 48px}
+.subtopics-wrap.open{display:block}
+.sub-row{display:flex;align-items:flex-start;gap:8px;padding:7px 0;cursor:pointer;border-bottom:1px solid #0f172a}
+.sub-row:last-of-type{border-bottom:none}
+.sub-cb{width:16px;height:16px;border-radius:4px;border:1.5px solid var(--border);flex-shrink:0;margin-top:1px;display:flex;align-items:center;justify-content:center;transition:all .2s}
+.sub-cb.checked{border-color:var(--uc)!important;background:var(--ub2)!important}
+.sub-check{font-size:10px;font-weight:900;display:none}
+.sub-cb.checked .sub-check{display:block}
+.sub-text{font-size:clamp(11px,2.3vw,12.5px);color:var(--muted);line-height:1.5}
+.sub-row.done .sub-text{color:var(--dim);text-decoration:line-through}
+.mark-all-btn{margin-top:10px;padding:5px 12px;border-radius:8px;border:1px solid;font-size:10px;cursor:pointer;font-weight:700;letter-spacing:.5px;background:transparent}
+#bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:200;background:var(--bg2);border-top:1px solid var(--border);display:flex;padding:6px 0 max(6px,env(safe-area-inset-bottom));}
+.tab-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;background:transparent;border:none;color:var(--dim);font-size:9px;font-weight:700;cursor:pointer;padding:6px 4px;letter-spacing:.5px;transition:color .2s}
+.tab-btn.active{color:#3b82f6}
+.tab-icon{font-size:18px}
+#install-banner{display:none;position:fixed;bottom:70px;left:10px;right:10px;z-index:300;background:linear-gradient(135deg,#1e3a5f,#1a1a2e);border:1px solid #3b82f655;border-radius:14px;padding:14px 16px;box-shadow:0 8px 30px #00000088}
+#install-banner h3{font-size:13px;color:#fff;margin-bottom:4px}
+#install-banner p{font-size:11px;color:var(--muted);margin-bottom:10px;line-height:1.5}
+.install-btns{display:flex;gap:8px}
+.install-ok{flex:1;padding:9px;background:#3b82f6;color:#fff;border:none;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer}
+.install-no{flex:1;padding:9px;background:transparent;color:var(--muted);border:1px solid var(--border);border-radius:8px;font-size:12px;font-weight:700;cursor:pointer}
+#stats-panel{display:none;padding-bottom:80px}
+#stats-panel.visible{display:block}
+.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin:12px 10px}
+.stat-card h3{font-size:11px;color:var(--dim);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px}
+.stat-row{display:flex;justify-content:space-between;align-items:center;padding:7px 0;border-bottom:1px solid var(--border)}
+.stat-row:last-child{border-bottom:none}
+.stat-name{font-size:12px;color:var(--text)}
+.stat-val{font-size:12px;font-weight:700}
+.legend-row{display:flex;align-items:center;gap:8px;padding:6px 0}
+.legend-stars{font-size:12px}
+.legend-desc{font-size:11px;color:var(--muted)}
+#scroll-container{height:100vh;overflow-y:auto;scroll-behavior:smooth}
+.install-guide{background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:14px 16px;margin:12px 10px;color:var(--text)}
+.install-guide h3{font-size:13px;color:#fff;margin-bottom:10px}
+.install-step{font-size:11px;color:var(--muted);line-height:1.8;margin-bottom:8px}
+.install-step strong{color:var(--text)}
+</style>
+</head>
+<body>
+<div id="scroll-container">
+<div id="header">
+<h1>⚖️ CA Foundation – Business Law</h1>
+<p>ICAI New Scheme · Paper 2 · All 7 Chapters</p>
+<div class="progress-wrap"><div class="progress-bar" id="prog-bar" style="width:0%"></div></div>
+<div class="progress-labels">
+<span id="prog-text">0/0 Topics · 0/0 Sub-topics</span>
+<span class="progress-pct" id="prog-pct" style="color:#94a3b8">0%</span>
+</div>
+</div>
+<div style="height:120px"></div>
+<div id="main">
+<div id="filters" style="top:120px">
+<button class="filter-btn active" data-filter="all" style="--fc:#3b82f6;--fb:#1e3a5f33">All Topics</button>
+<button class="filter-btn" data-filter="pending" style="--fc:#f59e0b;--fb:#292524">⏳ Pending</button>
+<button class="filter-btn" data-filter="5" style="--fc:#fbbf24;--fb:#29241a">★★★★★ Must Do</button>
+<button class="filter-btn" data-filter="4" style="--fc:#fb923c;--fb:#29201a">★★★★ High</button>
+<button class="filter-btn" data-filter="3" style="--fc:#9ca3af;--fb:#1a1f2e">★★★ Moderate</button>
+</div>
+<div style="height:44px"></div>
+<div id="unit-nav">
+<button class="unit-pill active" data-unit="all" style="--uc:#3b82f6;--ub:#1e3a5f33">All</button>
+</div>
+<div id="units-container"></div>
+</div>
+<div id="stats-panel">
+<div style="height:10px"></div>
+<div class="install-guide">
+<h3>📲 INSTALL AS APP</h3>
+<div class="install-step"><strong>ANDROID:</strong> Tap ⋮ menu → "Install app" or "Add to Home Screen"</div>
+<div class="install-step"><strong>iPhone:</strong> Open in Safari → Share → "Add to Home Screen"</div>
+<div class="install-step"><strong>Chrome:</strong> Click install icon in address bar</div>
+</div>
+<div class="stat-card">
+<h3>📊 Chapter Progress</h3>
+<div id="chapter-stats"></div>
+</div>
+<div class="stat-card">
+<h3>⭐ Importance Legend</h3>
+<div class="legend-row"><span class="legend-stars">★★★★★</span><span class="legend-desc"><b style="color:#fbbf24">MUST DO</b> – Highest exam weightage</span></div>
+<div class="legend-row"><span class="legend-stars">★★★★☆</span><span class="legend-desc"><b style="color:#fb923c">HIGH</b> – Frequently tested</span></div>
+<div class="legend-row"><span class="legend-stars">★★★☆☆</span><span class="legend-desc"><b style="color:#9ca3af">MODERATE</b> – Occasionally tested</span></div>
+<div class="legend-row"><span class="legend-stars">★★☆☆☆</span><span class="legend-desc"><b style="color:#6b7280">LOW</b> – Conceptual only</span></div>
+</div>
+<div class="stat-card">
+<h3>🗑️ Reset Data</h3>
+<p style="font-size:12px;color:var(--muted);margin-bottom:10px">Clear all progress and start fresh.</p>
+<button onclick="resetAll()" style="width:100%;padding:10px;background:transparent;color:#ef4444;border:1px solid #ef444455;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer">Reset All Progress</button>
+</div>
+<div style="height:20px"></div>
+</div>
+<div id="bottom-nav">
+<button class="tab-btn active" data-tab="tracker" onclick="switchTab('tracker')">
+<span class="tab-icon">📚</span><span>Tracker</span>
+</button>
+<button class="tab-btn" data-tab="stats" onclick="switchTab('stats')">
+<span class="tab-icon">📊</span><span>Progress</span>
+</button>
+</div>
+<div id="install-banner">
+<h3>📲 Install as App</h3>
+<p>Use offline and get quick home screen access!</p>
+<div class="install-btns">
+<button class="install-ok" onclick="triggerInstall()">Install</button>
+<button class="install-no" onclick="dismissInstall()">Later</button>
+</div>
+</div>
+</div>
+<script>
+const SYLLABUS=[{id:'ch1',num:1,title:'Indian Regulatory Framework',color:'#1a2535',accent:'#06b6d4',abbr:'IRF',topics:[{id:'1.1',title:'Overview of Indian Regulatory Framework',stars:3,subtopics:['Need and importance of business regulation','Constitutional framework for business laws in India','Sources of commercial law – Statutes, Case Law, Custom & Usage']},{id:'1.2',title:'Major Regulatory Bodies',stars:4,subtopics:['Ministry of Finance – role and functions','Ministry of Corporate Affairs (MCA) – role and functions','Securities and Exchange Board of India (SEBI) – powers and functions','Reserve Bank of India (RBI) – role in business regulation','Insolvency and Bankruptcy Board of India (IBBI)','Ministry of Law and Justice','Other bodies – CCI, IRDAI, PFRDA']},{id:'1.3',title:'Hierarchy of Courts and Dispute Resolution',stars:2,subtopics:['Structure of Indian judiciary – Supreme Court, High Courts, District Courts','Tribunals – NCLT, NCLAT, SAT, DRT','Alternative Dispute Resolution – Arbitration, Conciliation, Mediation','Role of Ombudsman in financial sector']}]},{id:'ch2',num:2,title:'Indian Contract Act, 1872',color:'#1e3a5f',accent:'#3b82f6',abbr:'ICA',topics:[{id:'2.1',title:'Nature and Essentials of Contract',stars:5,subtopics:['Meaning and definition of contract (Sec. 2)','Essentials of a valid contract','Agreement vs Contract – distinction','Types: Valid, Void, Voidable, Illegal, Unenforceable','Express, Implied and Quasi contracts','Executed vs Executory contracts']},{id:'2.2',title:'Offer and Acceptance',stars:5,subtopics:['Definition and essentials of a valid offer (Sec. 2a)','Types: General offer, Specific offer, Counter offer','Communication of offer and its revocation (Sec. 4–6)','Essentials of a valid acceptance (Sec. 2b)','Communication and revocation of acceptance','Rules: Postal rule, Instantaneous communication','Cross offers and standing offers']},{id:'2.3',title:'Consideration',stars:5,subtopics:['Definition and essentials of consideration (Sec. 2d)','Types: Past, Present (Executed), Future (Executory)','Rules regarding valid consideration','Adequacy vs Sufficiency of consideration','Doctrine of Privity of Contract – exceptions','Exceptions: No consideration No contract (Sec. 25)']},{id:'2.4',title:'Capacity to Contract',stars:4,subtopics:['Persons competent to contract (Sec. 11)','Minor\'s agreement – nature and effects','Beneficial contracts for minors','Persons of unsound mind – Lunatic, Idiots, Drunkard','Persons disqualified by law (aliens, insolvent, convict)']},{id:'2.5',title:'Free Consent',stars:5,subtopics:['Meaning of Consent and Free Consent (Sec. 13–14)','Coercion (Sec. 15) – Definition, acts, effect on contract','Undue Influence (Sec. 16) – Definition, presumption, effect','Fraud (Sec. 17) – Elements, active concealment, effect','Misrepresentation (Sec. 18) – Types, innocent vs fraudulent, effect','Mistake (Sec. 20–22) – Mistake of Law, Mistake of Fact (Bilateral/Unilateral)']},{id:'2.6',title:'Legality of Object and Consideration',stars:4,subtopics:['Unlawful object/consideration (Sec. 23)','Agreements opposed to public policy (Sec. 23)','Void agreements – Trading with enemy, Wagering (Sec. 30)','Agreements in restraint of trade (Sec. 27)','Agreements in restraint of legal proceedings (Sec. 28)','Uncertain and impossible agreements (Sec. 29, 56)']},{id:'2.7',title:'Contingent Contracts',stars:3,subtopics:['Meaning and characteristics (Sec. 31)','Rules regarding contingent contracts (Sec. 32–36)','Difference: Contingent contract vs Wagering agreement']},{id:'2.8',title:'Performance of Contract',stars:4,subtopics:['Who must perform and who can demand performance','Time and place of performance','Tender of performance – essentials','Reciprocal promises (Sec. 51–58)','Appropriation of payments – Clayton\'s Rule (Sec. 59–61)','Assignment of contracts']},{id:'2.9',title:'Discharge of Contract',stars:5,subtopics:['Discharge by Performance','Discharge by Agreement/Consent – Novation, Rescission, Alteration, Remission','Discharge by Impossibility – Initial and Subsequent (Doctrine of Frustration, Sec. 56)','Discharge by Lapse of Time','Discharge by Operation of Law – Merger, Insolvency, Material Alteration','Discharge by Breach – Actual breach and Anticipatory breach']},{id:'2.10',title:'Remedies for Breach of Contract',stars:5,subtopics:['Rescission of contract','Suit for Damages – Ordinary/General, Special, Exemplary/Vindictive, Nominal','Remoteness of damage – Hadley v Baxendale rule','Liquidated damages vs Penalty','Suit for Specific Performance','Suit for Injunction','Suit on Quantum Meruit']},{id:'2.11',title:'Contract of Indemnity and Guarantee',stars:5,subtopics:['Contract of Indemnity – Meaning, rights of indemnity holder (Sec. 124–125)','Contract of Guarantee – Meaning, features (Sec. 126)','Distinction: Indemnity vs Guarantee','Continuing Guarantee – Revocation (Sec. 129–130)','Rights of Surety – Against Creditor, Principal Debtor, Co-Sureties','Discharge of Surety (Sec. 133–139)','Co-sureties and their contribution']},{id:'2.12',title:'Contract of Bailment and Pledge',stars:4,subtopics:['Bailment – Meaning, essentials and kinds (Sec. 148)','Duties and rights of Bailor and Bailee','Bailee\'s lien – Particular and General lien','Pledge – Meaning, features (Sec. 172)','Rights and duties of Pawnor and Pawnee','Distinction: Bailment vs Pledge','Pledge by non-owners (Sec. 178–179)']},{id:'2.13',title:'Contract of Agency',stars:5,subtopics:['Meaning of Agent and Principal (Sec. 182)','Creation of Agency – Modes (Express, Implied, Ratification, Necessity, Estoppel)','Ratification – Essentials and effects','Types of Agents – Universal, General, Special, Factor, Broker, Del Credere','Rights and Duties of Agent','Rights and Duties of Principal','Extent of Agent\'s Authority – Actual, Apparent, Emergency','Sub-agent vs Substituted agent','Personal liability of Agent to third parties','Termination of Agency – modes and effects','Irrevocable agency']},{id:'2.14',title:'Quasi Contracts',stars:3,subtopics:['Supply of necessaries to persons incapable (Sec. 68)','Payment by interested person (Sec. 69)','Obligation for non-gratuitous act (Sec. 70)','Responsibility of finder of goods (Sec. 71)','Liability for money paid by mistake or coercion (Sec. 72)']}]},{id:'ch3',num:3,title:'Sale of Goods Act, 1930',color:'#1a3a2a',accent:'#10b981',abbr:'SOGA',topics:[{id:'3.1',title:'Formation of Contract of Sale',stars:5,subtopics:['Definitions – Buyer, Seller, Goods, Price, Delivery (Sec. 2)','Essentials of contract of sale','Sale vs Agreement to sell – distinction and importance','Sale vs Hire-Purchase – distinction','Sale vs Bailment – distinction','Types of Goods – Existing (Specific/Ascertained/Unascertained), Future, Contingent','Effects of destruction of goods (Sec. 7–8)']},{id:'3.2',title:'Conditions and Warranties',stars:5,subtopics:['Meaning of Condition and Warranty (Sec. 12)','Distinction: Condition vs Warranty','Express and Implied Conditions (Sec. 14–17)','Implied condition as to title, description, sample, fitness, merchantable quality','Express and Implied Warranties (Sec. 14, 16)','When condition treated as warranty (Sec. 13)','Doctrine of Caveat Emptor (Sec. 16) and its exceptions']},{id:'3.3',title:'Transfer of Ownership and Delivery',stars:5,subtopics:['Meaning of property and its significance','Passing of property in Specific/Ascertained Goods (Sec. 20–22)','Passing of property in Unascertained Goods (Sec. 23)','Goods on approval / Sale or Return (Sec. 24)','Reservation of right of disposal (Sec. 25)','Risk and property – rule','Nemo Dat Quod Non Habet rule (Sec. 27)','Exceptions to Nemo Dat rule (Sec. 27–30)','Transfer by mercantile agent, estoppel, seller in possession, buyer in possession','Delivery of Goods – Meaning, types and rules (Sec. 33–40)','Acceptance of goods by buyer']},{id:'3.4',title:'Unpaid Seller and His Rights',stars:5,subtopics:['Definition of Unpaid Seller (Sec. 45)','Rights against the goods: Lien, Stoppage in Transit, Right of R
